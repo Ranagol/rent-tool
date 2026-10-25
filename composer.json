@@ -19,6 +19,7 @@
     "config": {
         "allow-plugins": {
             "php-http/discovery": true,
+            "symfony/ai-mate-composer-plugin": true,
             "symfony/flex": true,
             "symfony/runtime": true
         },
@@ -68,5 +69,10 @@
             "require": "8.1.*",
             "docker": true
         }
+    },
+    "require-dev": {
+        "symfony/ai-mate": "^0.15.0",
+        "symfony/ai-monolog-mate-extension": "^0.15.0",
+        "symfony/ai-symfony-mate-extension": "^0.15.0"
     }
 }
