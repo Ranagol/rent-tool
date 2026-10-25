@@ -88,6 +88,8 @@ RUN <<-EOF
 		| tar -xz -C /usr/local/bin --strip-components=1 --wildcards '*/symfony-lsp'
 EOF
 
+RUN mkdir -p /app/vendor && chown -R nonroot:nonroot /app/vendor
+
 USER nonroot
 
 COPY --link frankenphp/conf.d/20-app.dev.ini $PHP_INI_DIR/app.conf.d/

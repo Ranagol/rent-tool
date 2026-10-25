@@ -42,13 +42,14 @@ jobs:
 
       - name: Start services
         run: docker compose up --wait --no-build
+        
       - name: Diagnose containers on failure
         if: failure()
         run: |
           docker compose ps -a
           docker inspect "$(docker compose ps -q php)" --format '{{json .State.Health}}' || true
           docker compose logs --no-color --tail=200 php || true
-          
+
       - name: Check HTTP reachability
         run: curl -v --fail-with-body http://localhost
       # Uncomment when the homepage is configured, or change the path to check
