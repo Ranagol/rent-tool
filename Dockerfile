@@ -63,11 +63,15 @@ ENV FRANKENPHP_WORKER_CONFIG=watch
 
 # dev dependencies
 RUN <<-EOF
-	mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
-	install-php-extensions xdebug
-	useradd -m -s /bin/bash nonroot
-	git config --system --add safe.directory /app
+        mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+        install-php-extensions xdebug
+        useradd -m -s /bin/bash nonroot
+        setcap CAP_NET_BIND_SERVICE=+eip /usr/local/bin/frankenphp
+        chown -R nonroot:nonroot /config/caddy /data/caddy
+        git config --system --add safe.directory /app
 EOF
+
+
 
 # Symfony Language Server, for editors and AI agents that don't bundle it themselves
 # https://github.com/symfony/language-tools
@@ -83,6 +87,8 @@ RUN <<-EOF
 	curl -fsSL "https://github.com/symfony/language-tools/releases/download/$lsp_version/symfony-lsp-$lsp_version-linux-$lsp_arch.tar.gz" \
 		| tar -xz -C /usr/local/bin --strip-components=1 --wildcards '*/symfony-lsp'
 EOF
+
+USER nonroot
 
 COPY --link frankenphp/conf.d/20-app.dev.ini $PHP_INI_DIR/app.conf.d/
 
