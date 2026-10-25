@@ -88,7 +88,8 @@ RUN <<-EOF
 		| tar -xz -C /usr/local/bin --strip-components=1 --wildcards '*/symfony-lsp'
 EOF
 
-RUN mkdir -p /app/vendor && chown -R nonroot:nonroot /app/vendor
+RUN mkdir -p /app/vendor /app/var \
+    && chown -R nonroot:nonroot /app/vendor /app/var
 
 USER nonroot
 
