@@ -6,7 +6,7 @@
 - Make the application feel dynamic, responsive, and visually engaging rather than static or generic.
 - Use animations, transitions, and interactive visual feedback extensively to create a premium, high-quality user experience.
 - Maintain clear visual hierarchy, readability, consistency, and a professional appearance.
-- Use a coherent visual identity across inventory, customers, rentals, rental history, and invoicing pages.
+- Use a coherent visual identity across inventory, customers, rentals, and rental history, and for generated contract and invoice PDFs.
 - Avoid excessive decoration that interferes with usability, but do not sacrifice visual interest in favor of an unnecessarily minimal interface.
 
 ## Design System
@@ -24,8 +24,8 @@
 - Build reusable buttons, form controls, cards, tables, badges, dialogs, dropdowns, navigation elements, notifications, and page layouts.
 - Ensure that shared components have consistent styling, sizing, behavior, and animation patterns.
 - Apply appropriate hover, focus, active, disabled, loading, success, and error states to interactive components.
-- Use visual indicators to communicate meaningful application states, such as tool availability, active rentals, overdue returns, and outstanding invoices.
-- Make inventory items, dashboard cards, actionable table rows, and navigation elements feel interactive wherever appropriate.
+- Use visual indicators to communicate meaningful application states, such as tool availability, active rentals, and overdue returns.
+- Make inventory items, actionable table rows, and navigation elements feel interactive wherever appropriate.
 - Provide consistent loading, empty, error, confirmation, and validation states.
 - Use clear visual distinctions between destructive actions, such as deleting records, and ordinary actions.
 
@@ -41,7 +41,7 @@
 - Form controls should transition smoothly between default, hover, focus, validation, and disabled states.
 - Dropdowns, dialogs, popovers, and notifications should use appropriate entrance and exit animations, such as fading, sliding, or scaling.
 - Animate expanding and collapsing sections, dropdown menus, and other elements whose visibility changes.
-- Use subtle staggered entrance animations for groups of cards, dashboard sections, or list items when they improve the overall experience.
+- Use subtle staggered entrance animations for groups of cards or list items when they improve the overall experience.
 - Use animated loading indicators and skeleton screens where appropriate.
 - Provide clear animated feedback for important actions, such as successfully saving a customer, creating a rental, updating inventory, or generating an invoice.
 - Use animations to communicate changes in application state, including status changes, newly added records, and validation errors.
@@ -51,12 +51,11 @@
 
 ## Page-Specific Guidance
 
-- **Dashboard:** Use engaging metric cards, clear status indicators, subtle entrance animations, and interactive charts or summaries where applicable.
 - **Inventory:** Make tool cards, availability indicators, category filters, and inventory tables responsive to user interaction.
 - **Customers:** Use consistent interactive table rows, searchable lists, clear customer details, and animated feedback for actions.
 - **Rentals:** Make rental statuses, date information, return actions, and overdue indicators immediately recognizable. Use animations to reinforce status changes and important actions.
 - **Rental History:** Maintain a readable, structured presentation with smooth filtering, sorting, pagination, and record-selection feedback.
-- **Invoicing:** Clearly distinguish invoice statuses, payment states, totals, and financial actions. Provide immediate visual feedback when invoices are created, updated, or generated.
+- **Generated PDFs:** Present contract and invoice details with a clear hierarchy, readable content, and euro-denominated totals.
 - Keep all page-specific styling consistent with the shared design system.
 
 ## Performance and Accessibility

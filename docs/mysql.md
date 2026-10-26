@@ -1,5 +1,8 @@
 # Using MySQL
 
+This is an optional database alternative. The RentTool specification in
+[README.md](../README.md) uses PostgreSQL.
+
 The Docker configuration of this repository is extensible thanks to Flex recipes.
 By default, the recipe installs PostgreSQL.
 

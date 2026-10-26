@@ -8,6 +8,7 @@
   - [4.3 Rental management/history](#43-rental-managementhistory)
   - [4.4 Rental contract PDF](#44-rental-contract-pdf)
   - [4.5 Invoice PDF](#45-invoice-pdf)
+  - [4.6 User accounts](#46-user-accounts)
 - [5 MODELS](#5-models)
   - [5.1 Relationships](#51-relationships)
   - [5.2 Tool](#52-tool)
@@ -43,7 +44,7 @@ Features: tool inventory, customer management, rental history, rental invoice.
 - Symfony for the backend
 - Twig for the frontend, with optional Alpine.js added later only if needed
 - Docker
-- MySQL
+- PostgreSQL
 - Tailwind
 
 # 4 FEATURES
@@ -96,6 +97,12 @@ Important rule: generate the contract from the `rentals` data. Do NOT create a s
 
 Important rule: one rental can have at most one invoice.
 
+## 4.6 User accounts
+
+- Users can register through the application and log in with a form-based login.
+- Users are ordinary salespeople with the same access; roles and permissions are not needed.
+- Users must log in to use the rental-management features.
+
 # 5 MODELS
 
 ## 5.1 Relationships
@@ -147,7 +154,7 @@ Contracts and invoices: PDFs are generated from existing Rental, RentalItem, Cus
 
 ## 5.3 User
 
-The salespeople who operate this app. Use the default Symfony user model.
+The salespeople who operate this app. Persist registered users and use the default Symfony user model with Symfony Security's form-login authenticator. All users have the same access; do not add roles or permissions.
 
 ## 5.4 Customer
 
@@ -188,7 +195,7 @@ The salespeople who operate this app. Use the default Symfony user model.
 Definitions and rules:
 
 - A rental is active when `actual_return_date` is NULL and `is_cancelled` is false.
-- A rental can never be deleted; it must stay in the system. It can be cancelled (tool broke, customer changed their mind, needed a stronger model, etc.). A cancelled rental means the customer does not have to pay.
+- A rental can never be deleted; it must stay in the system. It can be cancelled (tool broke, customer changed their mind, needed a stronger model, etc.).
 - A cancelled rental is excluded from active rentals and must not be invoiced.
 - Cancellation does not automatically mean the tools have been returned. Tools must not be marked `available` until they are physically returned; tools returned damaged must be marked `in_repair`.
 - Cancelled rentals and their RentalItems remain in the database.
@@ -201,6 +208,8 @@ Validation:
 ### 5.5.2 Rental pricing
 
 Rental time is measured in days, from `rental_start_date`. The `actual_return_date` is filled in when the customer returns the tools.
+
+All prices and totals are in euros (EUR). Do not calculate or add taxes.
 
 - Billable days = number of started 24-hour periods between `rental_start_date` and `actual_return_date`, with a minimum of 1 day.
   - 23 hours = 1 day cost
@@ -216,7 +225,7 @@ Rental time is measured in days, from `rental_start_date`. The `actual_return_da
 - Only tools with status `available` can be rented.
 - Tools associated with an active rental cannot have their status changed manually.
 - When a rental is created, all included tools change to `rented`.
-- When a rental is returned, tools change to `available` by default. Damaged tools must be marked `in_repair` instead.
+- When a rental is returned, mark each tool that needs repair as `in_repair`; mark the other returned tools `available`.
 - Tools with status `in_repair` or `retired` cannot be rented.
 - A tool can be changed manually between `available`, `in_repair`, and `retired` only when it is not associated with an active rental.
 
@@ -254,6 +263,6 @@ Rental time is measured in days, from `rental_start_date`. The `actual_return_da
 1. The customer returns all rented tools together to the shop.
 2. The salesperson finds the rental in the system and closes it:
    - `actual_return_date` is set to the current date and time.
-   - Returned tools are marked `available` automatically, except tools requiring repair, which must be marked `in_repair`.
+   - The salesperson marks each returned tool that needs repair as `in_repair`; other returned tools are marked `available`.
    - The final `total_rent_cost` is calculated.
-   - The invoice is created automatically (generated from the rental data, see 4.5) with payment status unpaid.
+   - The invoice PDF is generated automatically from the rental data (see 4.5).

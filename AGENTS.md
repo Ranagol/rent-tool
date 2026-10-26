@@ -6,6 +6,10 @@ Twig, API Platform, Messenger, or Lock are installed unless one of those says so
 
 ## Ask before generating
 
+Consult the README and relevant project documentation first. Follow decisions
+already specified there, and ask only for choices that remain unspecified or
+conflict across the documentation.
+
 If the task doesn't specify, ask rather than guess:
 
 - Persistence: Doctrine ORM, Doctrine ODM, or none?
@@ -141,7 +145,6 @@ o	D — Dependency Inversion Principle: High-level business logic should depend 
 •	Clean Code: Use meaningful names, small and focused methods, clear control flow, and readable code.
 Apply these principles pragmatically. Avoid overengineering, premature abstractions, unnecessary design patterns, and refactoring unrelated code. Follow existing project conventions and prioritize readability, maintainability, and correctness over theoretical purity.
 Before completing a task, review your changes for meaningful violations of these principles and correct them.
-
 
 
 
