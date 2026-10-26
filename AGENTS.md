@@ -106,3 +106,9 @@ things up in the project instead of relying on memory:
 - Read the installed source and docblocks under `vendor/`.
 - Docs: https://symfony.com/doc/current/ (switch to the version matching
   `composer.json` if it differs).
+
+## Additional Instructions
+
+- Read README.md file in the root directory. Here you will find the description of the app and the bussiness logic. Use it.
+- Read all files in /docs/rent-tool-docs, before changing the app. Here are the instructions for the AIs. These instructions are extremly important.
+

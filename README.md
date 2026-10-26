@@ -1,60 +1,259 @@
-# Symfony Docker
+# Content
 
-A [Docker](https://www.docker.com/)-based installer and runtime for the [Symfony](https://symfony.com) web framework,
-with [FrankenPHP](https://frankenphp.dev) and [Caddy](https://caddyserver.com/) inside!
+- [2 APP DESCRIPTION](#2-app-description)
+- [3 USED TECHNOLOGIES](#3-used-technologies)
+- [4 FEATURES](#4-features)
+  - [4.1 Tool inventory](#41-tool-inventory)
+  - [4.2 Customer management](#42-customer-management)
+  - [4.3 Rental management/history](#43-rental-managementhistory)
+  - [4.4 Rental contract PDF](#44-rental-contract-pdf)
+  - [4.5 Invoice PDF](#45-invoice-pdf)
+- [5 MODELS](#5-models)
+  - [5.1 Relationships](#51-relationships)
+  - [5.2 Tool](#52-tool)
+    - [5.2.1 Tool table](#521-tool-table)
+    - [5.2.2 Tool business logic](#522-tool-business-logic)
+    - [5.2.3 Tool deletion](#523-tool-deletion)
+  - [5.3 User](#53-user)
+  - [5.4 Customer](#54-customer)
+    - [5.4.1 Customer table](#541-customer-table)
+    - [5.4.2 Customer deletion](#542-customer-deletion)
+  - [5.5 Rental](#55-rental)
+    - [5.5.1 Rental table](#551-rental-table)
+    - [5.5.2 Rental pricing](#552-rental-pricing)
+    - [5.5.3 Rental business logic](#553-rental-business-logic)
+    - [5.5.4 Rentals deleting](#554-rentals-deleting)
+  - [5.6 RentalItem](#56-rentalitem)
+    - [5.6.1 RentalItem table](#561-rentalitem-table)
+- [6 RENTING PROCESS](#6-renting-process)
+- [7 RETURNING RENTED TOOLS](#7-returning-rented-tools)
 
-Coding-agents ready: ships with a [Dev Container](https://containers.dev/) and a [one-page guide](docs/agents.md)
-to run [OpenCode](https://opencode.ai), [Claude Code](https://claude.ai/claude-code), or any AI coding assistant,
-against a local or a remote model, with an optional network sandbox.
+**RentTool 2026 - AGENTS.md**
 
-![CI](https://github.com/dunglas/symfony-docker/workflows/CI/badge.svg)
+Instructions for AI coding agents working on this project. Section numbers match the specification document. Follow the business rules below exactly; they are requirements, not suggestions.
 
-## Getting Started
+# 2 APP DESCRIPTION
 
-1. If not already done, [install Docker Compose](https://docs.docker.com/compose/install/) (v2.10+)
-2. Run `docker compose build --pull --no-cache` to build fresh images
-3. Run `docker compose up --wait` to set up and start a fresh Symfony project
-4. Open `https://localhost` in your favorite web browser and [accept the auto-generated TLS certificate](https://stackoverflow.com/a/15076602/1352334)
-5. Run `docker compose down --remove-orphans` to stop the Docker containers.
+RentTool is a rental management system for companies that rent power tools professionally.
 
-## Features
+Features: tool inventory, customer management, rental history, rental invoice.
 
-- Production, development and CI ready
-- Just 1 service by default
-- Super-readable configuration
-- Blazing-fast performance thanks to [the worker mode of FrankenPHP](https://frankenphp.dev/docs/worker/)
-- [Installation of extra Docker Compose services](docs/extra-services.md) with Symfony Flex
-- Automatic HTTPS (in dev and prod)
-- HTTP/3 and [Early Hints](https://symfony.com/blog/new-in-symfony-6-3-early-hints) support
-- Real-time messaging thanks to a built-in [Mercure hub](https://symfony.com/doc/current/mercure.html)
-- [Vulcain](https://vulcain.rocks) support
-- Native [XDebug](docs/xdebug.md) integration
-- [Hot Reloading](https://frankenphp.dev/docs/hot-reload/)
-- [Dev Container](https://containers.dev/) support
-- [AI coding agents](docs/agents.md) with an optional network sandbox
-- Rootless, slim production image
+# 3 USED TECHNOLOGIES
 
-**Enjoy!**
+- Symfony for the backend
+- Twig for the frontend, with optional Alpine.js added later only if needed
+- Docker
+- MySQL
+- Tailwind
 
-## Docs
+# 4 FEATURES
 
-1. [Options available](docs/options.md)
-2. [Using Symfony Docker with an existing project](docs/existing-project.md)
-3. [Support for extra services](docs/extra-services.md)
-4. [Deploying in production](docs/production.md)
-5. [Debugging with Xdebug](docs/xdebug.md)
-6. [TLS Certificates](docs/tls.md)
-7. [Using MySQL instead of PostgreSQL](docs/mysql.md)
-8. [Using Alpine Linux instead of Debian](docs/alpine.md)
-9. [Using a Makefile](docs/makefile.md)
-10. [Updating the template](docs/updating.md)
-11. [Troubleshooting](docs/troubleshooting.md)
-12. [Using AI coding agents](docs/agents.md)
+## 4.1 Tool inventory
 
-## License
+Besides CRUD, the tool inventory needs only:
 
-Symfony Docker is available under the MIT License.
+- Search: by tool name or serial number.
+- Filter: by status (`available`, `rented`, `in_repair`, `retired`).
+- Status management: users can mark tools as `available` or `in_repair`, etc. Rental workflows manage the `rented` status automatically.
 
-## Credits
+## 4.2 Customer management
 
-Created by [Kévin Dunglas](https://dunglas.dev), co-maintained by [Maxime Helias](https://twitter.com/maxhelias) and sponsored by [Les-Tilleuls.coop](https://les-tilleuls.coop).
+- CRUD: create, view, edit, and delete customers.
+- Search: by customer name, email, or phone number.
+- Customer details page: contact information, address, comments, and rental history.
+
+## 4.3 Rental management/history
+
+- Create rental: select available tools and an existing customer, set the rental start date and expected return date.
+- Automatic status updates: set tools to `rented` when a rental is created and back to `available` when returned.
+- Return tool: record the actual return date.
+- Rental history: list rentals with the customer, tools, rental dates, and total cost.
+- Search and filters: search by customer or tool; filter by active and returned rentals.
+
+Important business rule: a tool in repair cannot be rented, and a rented tool cannot be rented again.
+
+## 4.4 Rental contract PDF
+
+- Generate a printable contract PDF from an existing rental.
+- Company branding: display the company name, address, and logo.
+- Contract content: customer details, tool name and serial number, rental start date, expected return date, and estimated total rental cost calculated using the expected return date.
+- Signature field: provide space for the customer's handwritten signature.
+- Download and print: salespeople can download and print the PDF.
+- The generated PDF must open automatically in a new browser tab.
+
+Important rule: generate the contract from the `rentals` data. Do NOT create a separate Contract model or database table.
+
+## 4.5 Invoice PDF
+
+- There is no Invoice model and no `invoices` table. Do not create them.
+- All invoice data is already in the `rentals` table (and related RentalItem, Customer, Tool data).
+- Invoice number: the Rental ID.
+- Issue date: `actual_return_date`.
+- Due date: 10 days after the issue date.
+- The invoice PDF is generated from existing rental data.
+- Generating the same invoice again must not create a second invoice.
+- Cancelled rentals must not be invoiced.
+
+Important rule: one rental can have at most one invoice.
+
+# 5 MODELS
+
+## 5.1 Relationships
+
+1. User to Rental
+   - One User can create many Rentals.
+   - Each Rental belongs to exactly one User.
+2. Customer to Rental
+   - One Customer can have many Rentals.
+   - Each Rental belongs to exactly one Customer.
+3. Rental to RentalItem
+   - One Rental contains one or more RentalItems.
+   - Each RentalItem belongs to exactly one Rental.
+4. Tool to RentalItem
+   - One Tool can appear in many RentalItems over time.
+   - Each RentalItem refers to exactly one Tool.
+   - A Tool can belong to only one active Rental at a time.
+
+Contracts and invoices: PDFs are generated from existing Rental, RentalItem, Customer, and Tool data. There are no separate Contract or Invoice models or database tables.
+
+## 5.2 Tool
+
+### 5.2.1 Tool table
+
+| Column | Definition |
+| --- | --- |
+| `id` | INT, PRIMARY KEY, AUTO_INCREMENT, NOT NULL |
+| `name` | VARCHAR(255), NOT NULL |
+| `serial_number` | VARCHAR(100), NOT NULL, UNIQUE |
+| `description` | TEXT, NULL |
+| `image_url` | VARCHAR(2048), NOT NULL. Mandatory whenever a tool is created; the salesperson enters it manually. |
+| `comments` | TEXT, NULL |
+| `daily_rent_cost` | DECIMAL(10,2), NOT NULL, must not be negative |
+| `status` | VARCHAR(20), NOT NULL, DEFAULT `'available'`. Allowed values: `available`, `rented`, `in_repair`, `retired` |
+
+### 5.2.2 Tool business logic
+
+- A tool cannot have more than one active rental at a time.
+- A tool can only be added to a rental if its status is `available`.
+- Prevent two simultaneous active rentals of the same tool, including concurrent requests.
+- Rental creation must use a database transaction and lock the selected tool records while checking availability and creating the rental.
+- Rental creation and tool status updates must succeed or fail together.
+
+### 5.2.3 Tool deletion
+
+1. The `RentalItem.tool_id` foreign key must prevent deleting a tool that appears in rental history (RESTRICT).
+2. Application: reject the deletion and display: "This tool cannot be deleted because it has rental history."
+3. Result: the tool and all historical rentals remain intact.
+
+## 5.3 User
+
+The salespeople who operate this app. Use the default Symfony user model.
+
+## 5.4 Customer
+
+### 5.4.1 Customer table
+
+| Column | Definition |
+| --- | --- |
+| `id` | INT, PRIMARY KEY, AUTO_INCREMENT |
+| `name` | VARCHAR(255), NOT NULL |
+| `email` | VARCHAR(255), NOT NULL, UNIQUE |
+| `phone` | VARCHAR(30), NULL |
+| `address` | VARCHAR(255), NULL |
+| `city` | VARCHAR(100), NULL |
+| `postal_code` | VARCHAR(20), NULL |
+| `comments` | TEXT, NULL |
+
+### 5.4.2 Customer deletion
+
+1. Database: the `Rental.customer_id` foreign key must prevent deleting a customer who has rentals (RESTRICT).
+2. Application: reject the operation and display a message such as: "This customer cannot be deleted because they have rental history."
+3. Result: the customer and all historical rentals remain intact.
+
+## 5.5 Rental
+
+### 5.5.1 Rental table
+
+| Column | Definition |
+| --- | --- |
+| `id` | INT, PRIMARY KEY, AUTO_INCREMENT |
+| `customer_id` | INT, NOT NULL, FOREIGN KEY REFERENCES customers(id) |
+| `user_id` | INT, NOT NULL, FOREIGN KEY REFERENCES users(id) |
+| `rental_start_date` | DATETIME, NOT NULL |
+| `expected_return_date` | DATETIME, NOT NULL. Default offered in the frontend: `rental_start_date` + 1 day |
+| `actual_return_date` | DATETIME, NULL. Records the actual return date. |
+| `total_rent_cost` | DECIMAL(10,2), NOT NULL. Total cost of all rental items together. |
+| `is_cancelled` | BOOLEAN, false by default |
+
+Definitions and rules:
+
+- A rental is active when `actual_return_date` is NULL and `is_cancelled` is false.
+- A rental can never be deleted; it must stay in the system. It can be cancelled (tool broke, customer changed their mind, needed a stronger model, etc.). A cancelled rental means the customer does not have to pay.
+- A cancelled rental is excluded from active rentals and must not be invoiced.
+- Cancellation does not automatically mean the tools have been returned. Tools must not be marked `available` until they are physically returned; tools returned damaged must be marked `in_repair`.
+- Cancelled rentals and their RentalItems remain in the database.
+
+Validation:
+
+- `expected_return_date` must be strictly later than `rental_start_date`.
+- `actual_return_date` must be on or after `rental_start_date` (an immediate return is possible).
+
+### 5.5.2 Rental pricing
+
+Rental time is measured in days, from `rental_start_date`. The `actual_return_date` is filled in when the customer returns the tools.
+
+- Billable days = number of started 24-hour periods between `rental_start_date` and `actual_return_date`, with a minimum of 1 day.
+  - 23 hours = 1 day cost
+  - 24 hours = 1 day cost
+  - 25 hours = 2 days cost
+- Before return, the estimated cost is calculated using `expected_return_date`.
+- `Rental.total_rent_cost` = sum of each RentalItem's `daily_rent_cost` multiplied by the rental's billable days.
+- The total is calculated when the rental is created and finalized upon return.
+- Costs must never be negative. `Tool.daily_rent_cost` and `RentalItem.daily_rent_cost` must also be nonnegative.
+
+### 5.5.3 Rental business logic
+
+- Only tools with status `available` can be rented.
+- Tools associated with an active rental cannot have their status changed manually.
+- When a rental is created, all included tools change to `rented`.
+- When a rental is returned, tools change to `available` by default. Damaged tools must be marked `in_repair` instead.
+- Tools with status `in_repair` or `retired` cannot be rented.
+- A tool can be changed manually between `available`, `in_repair`, and `retired` only when it is not associated with an active rental.
+
+### 5.5.4 Rentals deleting
+
+- Saved rentals and their associated RentalItems cannot be permanently deleted.
+- A rental can be cancelled by setting `is_cancelled` to true.
+- Cancellation must preserve the rental and all its RentalItems.
+
+## 5.6 RentalItem
+
+### 5.6.1 RentalItem table
+
+| Column | Definition |
+| --- | --- |
+| `id` | INT, PRIMARY KEY, AUTO_INCREMENT, NOT NULL |
+| `rental_id` | INT, NOT NULL, FOREIGN KEY REFERENCES rentals(id) |
+| `tool_id` | INT, NOT NULL, FOREIGN KEY REFERENCES tools(id), ON DELETE RESTRICT |
+| `daily_rent_cost` | DECIMAL(10,2), NOT NULL, nonnegative |
+
+- `daily_rent_cost` is stored here because a tool's price may change over time while rental history must not change. When a tool is rented out, copy the current `daily_rent_cost` from the `tools` table into the RentalItem.
+- Add a unique constraint on (`rental_id`, `tool_id`) so the same tool cannot be added twice to one rental.
+
+# 6 RENTING PROCESS
+
+1. The customer wants to rent some tools.
+2. The salesperson creates a new customer in the system if none exists.
+3. The salesperson creates a new rental.
+4. Multiple tools with status `available` can be added to the rental.
+5. On save, in one database transaction: create the rental and its RentalItems, mark the selected tools `rented` (they cannot be rented again until returned).
+6. The rental contract is created automatically: generate the contract PDF and open it in a new tab.
+
+# 7 RETURNING RENTED TOOLS
+
+1. The customer returns all rented tools together to the shop.
+2. The salesperson finds the rental in the system and closes it:
+   - `actual_return_date` is set to the current date and time.
+   - Returned tools are marked `available` automatically, except tools requiring repair, which must be marked `in_repair`.
+   - The final `total_rent_cost` is calculated.
+   - The invoice is created automatically (generated from the rental data, see 4.5) with payment status unpaid.
