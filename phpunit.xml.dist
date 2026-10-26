@@ -37,7 +37,7 @@
         <server name="APP_ENV" value="test" force="true"/>
         <server name="APP_DEBUG" value="true"/>
         <server name="APP_SECRET" value="test-secret"/>
-        <server name="DATABASE_URL" value="postgresql://app:!ChangeMe!@127.0.0.1:52162/app_test?serverVersion=16&amp;charset=utf8"/>
+        <server name="DATABASE_URL" value="postgresql://app:apppassword@database:5432/app_test?serverVersion=16&amp;charset=utf8"/>
         <server name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
     </php>
 </phpunit>

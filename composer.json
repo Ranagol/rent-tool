@@ -85,6 +85,7 @@
         }
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^4.3",
         "phpunit/phpunit": "^13.4",
         "symfony/ai-mate": "^0.15.0",
         "symfony/ai-monolog-mate-extension": "^0.15.0",
