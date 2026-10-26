@@ -51,7 +51,7 @@
 
 ## Page-Specific Guidance
 
-- **Inventory:** Make tool cards, availability indicators, category filters, and inventory tables responsive to user interaction.
+- **Inventory:** Make tool cards, availability indicators, and inventory tables responsive to user interaction. Support search and status filtering.
 - **Customers:** Use consistent interactive table rows, searchable lists, clear customer details, and animated feedback for actions.
 - **Rentals:** Make rental statuses, date information, return actions, and overdue indicators immediately recognizable. Use animations to reinforce status changes and important actions.
 - **Rental History:** Maintain a readable, structured presentation with smooth filtering, sorting, pagination, and record-selection feedback.
