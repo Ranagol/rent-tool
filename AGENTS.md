@@ -110,5 +110,38 @@ things up in the project instead of relying on memory:
 ## Additional Instructions
 
 - Read README.md file in the root directory. Here you will find the description of the app and the bussiness logic. Use it.
-- Read all files in /docs/rent-tool-docs, before changing the app. Here are the instructions for the AIs. These instructions are extremly important.
+- When something is unclear, contradictory, problematic, or not enough info, then ask for additonal info. Asking questions is OK. 
+
+Documentation
+Before starting a task, consult this file and the relevant project documentation.
+The following documents are located in the docs/rent-tool-docs directory:
+•	testing.md — testing strategy, tools, and procedures.
+•	style.md -- the style, outlook of the webpage. How to handle CSS.
+Use these documents as the sources of truth for their respective subjects. If a document is missing, relevant instructions are unclear, or documents contradict each other or the codebase, report the issue and ask for clarification when necessary. Do not silently invent requirements or resolve consequential conflicts autonomously.
+General Working Rules
+Inspect the relevant code and documentation before making changes. Follow existing project conventions and applicable documented decisions. Keep changes small, targeted, and limited to the approved task. Avoid unrelated refactoring and unnecessary dependencies. Do not make consequential architectural or requirements decisions without approval. Protect existing project data and configuration.
+Safety Rules
+•	Never delete the project directory or its contents wholesale.
+•	Never run destructive commands such as rm -rf, git clean -fd, or destructive reset commands without explicit approval.
+•	Never overwrite .env or delete database data without explicit approval.
+•	Prefer small, targeted changes.
+Failure Handling
+If the same approach fails twice, stop and diagnose the underlying cause instead of repeating it. After two unsuccessful attempts, report the error, what was tried, what was learned, and the next proposed approach. Wait for approval before making further attempts.
+Instruction Scope
+Follow them consistently, along with applicable project documentation and approval requirements.
+
+•	SOLID: Maintain clear responsibilities, high cohesion, and manageable dependencies.
+o	S — Single Responsibility Principle: Each class should have one well-defined responsibility and one primary reason to change.
+o	O — Open/Closed Principle: Software components should be open to extension but closed to modification where practical.
+o	L — Liskov Substitution Principle: Subtypes must be usable wherever their base types are expected without breaking correctness or expected behavior.
+o	I — Interface Segregation Principle: Prefer small, focused interfaces over large interfaces that force implementations to depend on methods they do not need.
+o	D — Dependency Inversion Principle: High-level business logic should depend on abstractions rather than concrete low-level implementations.
+•	DRY: Avoid unnecessary duplication of logic and business rules.
+•	KISS: Prefer the simplest solution that meets the requirements.
+•	Clean Code: Use meaningful names, small and focused methods, clear control flow, and readable code.
+Apply these principles pragmatically. Avoid overengineering, premature abstractions, unnecessary design patterns, and refactoring unrelated code. Follow existing project conventions and prioritize readability, maintainability, and correctness over theoretical purity.
+Before completing a task, review your changes for meaningful violations of these principles and correct them.
+
+
+
 
