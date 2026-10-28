@@ -9,22 +9,30 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixture extends Fixture
 {
+    public const REFERENCE_PREFIX = 'user-';
+
     public function __construct(
-        private UserPasswordHasherInterface $passwordHasher,
+        private readonly UserPasswordHasherInterface $passwordHasher,
     ) {
     }
 
     public function load(ObjectManager $manager): void
     {
-        $email = $_ENV['DEFAULT_USER_EMAIL'] ?? 'jedan@gmail.com';
-        $plainPassword = $_ENV['DEFAULT_USER_PASSWORD'] ?? 'jedan@gmail.com';
+        $admin = new User();
+        $admin->setEmail($_ENV['ADMIN_USER_EMAIL'] ?? 'admin@yahoo.com');
+        $admin->setRoles(['ROLE_ADMIN']);
+        $admin->setPassword($this->passwordHasher->hashPassword($admin, $_ENV['ADMIN_USER_PASSWORD'] ?? 'admin@yahoo.com'));
+        $manager->persist($admin);
+        // Adds a reference to the admin user so it can be retrieved later in other fixtures.
+        $this->addReference(self::REFERENCE_PREFIX.'admin', $admin);
 
-        $user = new User();
-        $user->setEmail($email);
-        $user->setPassword($this->passwordHasher->hashPassword($user, $plainPassword));
-        $user->setRoles(['ROLE_USER']);
+        $defaultUser = new User();
+        $defaultUser->setEmail($_ENV['DEFAULT_USER_EMAIL'] ?? 'jedan@yahoo.com');
+        $defaultUser->setRoles(['ROLE_USER']);
+        $defaultUser->setPassword($this->passwordHasher->hashPassword($defaultUser, $_ENV['DEFAULT_USER_PASSWORD'] ?? 'jedan@yahoo.com'));
+        $manager->persist($defaultUser);
+        $this->addReference(self::REFERENCE_PREFIX.'default', $defaultUser);
 
-        $manager->persist($user);
         $manager->flush();
     }
 }

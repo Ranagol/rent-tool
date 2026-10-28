@@ -61,10 +61,11 @@ class ToolCrudTest extends WebTestCase
 
     public function testIndexFiltersByStatus(): void
     {
-        $available = $this->createTool();
-        $retired = $this->createTool(ToolStatus::Retired);
+        $marker = 'Filter'.uniqid();
+        $available = $this->createTool(name: $marker.'a');
+        $retired = $this->createTool(ToolStatus::Retired, $marker.'r');
 
-        $this->client->request('GET', '/tools', ['status' => 'retired', 'q' => 'Drill']);
+        $this->client->request('GET', '/tools', ['status' => 'retired', 'q' => $marker]);
 
         $this->assertSelectorTextContains('table', $retired->getName());
         $this->assertSelectorTextNotContains('table', $available->getName());
