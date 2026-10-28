@@ -413,3 +413,13 @@ If the agent, Composer, or npm fails to reach a service, add the domain to the `
 Ensure Docker is running and that you have allocated enough resources (at least 2 GB of RAM).
 The firewall requires the `NET_ADMIN` capability, granted in
 `.devcontainer/compose.devcontainer.yaml`.
+
+
+## PHP imports
+
+- Always import classes, interfaces, traits and enums with a `use` statement at the top of the file.
+- Never write fully qualified class names inline in code, type hints, docblocks or `new` expressions. Wrong: `new \App\Entity\User()`. Right: `new User()` with `use App\Entity\User;`.
+- Never pass class names as strings. Use `Foo::class` instead of `'App\Foo\Bar'`. Example: `$container->get(UserPasswordHasherInterface::class)`.
+- When you use a class that is not imported yet, add its `use` statement in the same edit.
+- Keep `use` statements sorted alphabetically and remove unused ones.
+- The only exception is a name clash between two classes. Then use an alias: `use Foo\User as FooUser;`.

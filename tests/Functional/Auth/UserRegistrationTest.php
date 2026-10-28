@@ -6,6 +6,7 @@ use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+
 class UserRegistrationTest extends WebTestCase
 {
     public function testRegistrationPageLoads(): void
@@ -71,11 +72,12 @@ class UserRegistrationTest extends WebTestCase
         $client = static::createClient();
         $container = static::getContainer();
         $em = $container->get('doctrine')->getManager();
-        $passwordHasher = $container->get('Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface');
+        $passwordHasher = $container->get(UserPasswordHasherInterface::class);
 
         // Pre-create a user with this email
         $uniqueEmail = 'duplicate' . uniqid() . '@example.com';
-        $existingUser = new User();
+        $existingUser = new User();// I have constantly, repeatedly problem with intelephense. Undefined type 'App\Entity\User'. P1009. This line is an example. What is the problem here? Is intelephense faulty?
+        
         $existingUser->setEmail($uniqueEmail);
         $hashedPassword = $passwordHasher->hashPassword($existingUser, 'ExistingPassword123');
         $existingUser->setPassword($hashedPassword);
