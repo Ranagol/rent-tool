@@ -1,0 +1,10 @@
+{# Variables: title, subtitle (optional), action_url + action_label (optional primary action) #}
+<div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+    <div>
+        <h1 class="page-title">{{ title }}</h1>
+        {% if subtitle|default %}<p class="page-lead">{{ subtitle }}</p>{% endif %}
+    </div>
+    {% if action_url|default %}
+        <a href="{{ action_url }}" class="btn btn-primary">{{ action_label }}</a>
+    {% endif %}
+</div>

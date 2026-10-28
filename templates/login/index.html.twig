@@ -7,10 +7,6 @@
     <div class="card">
         <h1 class="page-title mb-6">Login</h1>
 
-        {% for message in app.flashes('success') %}
-            <div class="alert alert-success" role="status">{{ message }}</div>
-        {% endfor %}
-
         {{ form_start(form) }}
             {{ form_errors(form) }}
             {{ form_row(form.email) }}

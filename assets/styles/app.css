@@ -219,4 +219,39 @@ Each one is a bundle of Tailwind utilities, written with @apply */
     .link {
         @apply font-medium text-brand-600 underline-offset-4 hover:text-brand-700 hover:underline;
     }
+
+    /* Confirmation dialog */
+    .dialog {
+        @apply m-auto w-full max-w-md rounded-card border border-line bg-surface p-6 shadow-lift;
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+        transition: opacity 0.2s var(--ease-ui), transform 0.2s var(--ease-ui), overlay 0.2s allow-discrete, display 0.2s allow-discrete;
+    }
+
+    .dialog[open] {
+        opacity: 1;
+        transform: none;
+    }
+
+    @starting-style {
+        .dialog[open] {
+            opacity: 0;
+            transform: translateY(8px) scale(0.98);
+        }
+    }
+
+    .dialog::backdrop {
+        background: rgb(15 23 42 / 0);
+        transition: background 0.2s var(--ease-ui), overlay 0.2s allow-discrete, display 0.2s allow-discrete;
+    }
+
+    .dialog[open]::backdrop {
+        background: rgb(15 23 42 / 0.45);
+    }
+
+    @starting-style {
+        .dialog[open]::backdrop {
+            background: rgb(15 23 42 / 0);
+        }
+    }
 }

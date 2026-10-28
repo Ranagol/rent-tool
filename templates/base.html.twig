@@ -28,6 +28,7 @@
                 <a href="{{ path('app_home') }}" class="text-lg font-bold tracking-tight text-ink hover:text-brand-600">Rent<span class="text-brand-600">Tool</span></a>
                 <div class="flex items-center gap-1">
                     {% if app.user %}
+                        <a href="{{ path('app_user_index') }}" class="nav-link" {% if app.current_route starts with 'app_user' %}aria-current="page"{% endif %}>Users</a>
                         <a href="{{ path('app_logout') }}" class="nav-link">Logout</a>
                     {% else %}
                         <a href="{{ path('app_login') }}" class="nav-link" {% if app.current_route == 'app_login' %}aria-current="page"{% endif %}>Login</a>
@@ -37,6 +38,9 @@
             </nav>
         </header>
         <main>
+            <div class="mx-auto max-w-5xl px-4 sm:px-6 [&>*:first-child]:mt-6">
+                {% include '_partials/flash.html.twig' %}
+            </div>
             {% block body %}{% endblock %}
         </main>
     </body>

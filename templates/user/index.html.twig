@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Users{% endblock %}
+
+{% block body %}
+{% set params = {q: term, sort: sort, dir: direction} %}
+<div class="page">
+    {% include '_partials/page_header.html.twig' with {
+        title: 'Users',
+        subtitle: total ~ (1 == total ? ' user' : ' users'),
+        action_url: path('app_user_new'),
+        action_label: 'New user'
+    } %}
+
+    <div class="card !p-0 overflow-hidden">
+        <form method="get" class="flex flex-wrap items-center gap-3 border-b border-line p-4" role="search">
+            <input type="hidden" name="sort" value="{{ sort }}">
+            <input type="hidden" name="dir" value="{{ direction }}">
+            <label for="user-search" class="sr-only">Search by email</label>
+            <input type="search" id="user-search" name="q" value="{{ term }}" placeholder="Search by email…" class="form-control max-w-xs">
+            <button type="submit" class="btn btn-secondary">Search</button>
+            {% if term %}<a href="{{ path('app_user_index') }}" class="link text-sm">Clear</a>{% endif %}
+        </form>
+
+        {% if users is empty %}
+            {% include '_partials/empty_state.html.twig' with {
+                message: term ? 'No users match your search.' : 'There are no users yet.',
+                action_url: path('app_user_new'),
+                action_label: 'Create a user'
+            } %}
+        {% else %}
+            <div class="overflow-x-auto">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            {% for field, label in {id: 'ID', email: 'Email'} %}
+                                {% set next_dir = (sort == field and 'asc' == direction) ? 'desc' : 'asc' %}
+                                <th scope="col" aria-sort="{{ sort == field ? ('asc' == direction ? 'ascending' : 'descending') : 'none' }}">
+                                    <a href="{{ path('app_user_index', {q: term, sort: field, dir: next_dir}) }}" class="inline-flex items-center gap-1 hover:text-brand-700">
+                                        {{ label }}
+                                        {% if sort == field %}<span aria-hidden="true">{{ 'asc' == direction ? '↑' : '↓' }}</span>{% endif %}
+                                    </a>
+                                </th>
+                            {% endfor %}
+                            <th scope="col">Roles</th>
+                            <th scope="col" class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td><a href="{{ path('app_user_show', {id: user.id}) }}" class="link">{{ user.email }}</a></td>
+                                <td>
+                                    {% for role in user.roles %}<span class="badge badge-info">{{ role }}</span> {% endfor %}
+                                </td>
+                                <td>
+                                    <div class="flex justify-end gap-2">
+                                        <a href="{{ path('app_user_show', {id: user.id}) }}" class="btn btn-secondary">View</a>
+                                        <a href="{{ path('app_user_edit', {id: user.id}) }}" class="btn btn-secondary">Edit</a>
+                                        {% include '_partials/confirm_dialog.html.twig' with {
+                                            id: 'delete-user-' ~ user.id,
+                                            title: 'Delete user?',
+                                            message: 'This permanently deletes ' ~ user.email ~ '. This cannot be undone.',
+                                            action: path('app_user_delete', {id: user.id}),
+                                            token_id: 'delete' ~ user.id
+                                        } %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% include '_partials/pagination.html.twig' with {route: 'app_user_index', params: params, page: page, pages: pages} %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

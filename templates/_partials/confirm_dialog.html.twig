@@ -1,0 +1,14 @@
+{# Variables: id, title, message, action, token_id #}
+<button type="button" class="btn btn-danger" data-dialog-open="{{ id }}">Delete</button>
+
+<dialog id="{{ id }}" class="dialog" aria-labelledby="{{ id }}-title">
+    <form method="post" action="{{ action }}">
+        <h2 id="{{ id }}-title" class="text-lg font-semibold">{{ title }}</h2>
+        <p class="mt-2 text-sm text-ink-muted">{{ message }}</p>
+        <input type="hidden" name="_token" value="{{ csrf_token(token_id) }}">
+        <div class="mt-6 flex justify-end gap-2">
+            <button type="button" class="btn btn-secondary" data-dialog-close>Cancel</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </div>
+    </form>
+</dialog>
