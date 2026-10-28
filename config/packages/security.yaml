@@ -6,6 +6,7 @@ security:
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         # used to reload user from session & other features (e.g. switch_user)
+        # Simply this provider loads a user from the database by their email address.
         app_user_provider:
             entity:
                 class: App\Entity\User
@@ -13,17 +14,26 @@ security:
 
     firewalls:
         dev:
-            # Ensure dev tools and static assets are always allowed
+            # Ensure dev tools and static assets are always allowed for these dev routes. No security here.
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
+
+        # This is the main firewall for the application, handling authentication and access control.
         main:
             lazy: true
             provider: app_user_provider
+
+            # switches on the built-in login-form authenticator
             form_login:
+
+                # The path to the login page
                 login_path: app_login
+
+                # The route where the login form is submitted to
                 check_path: app_login
                 username_parameter: email
                 password_parameter: password
+                # where to go after a successful login (/).
                 default_target_path: /
             logout:
                 path: app_logout

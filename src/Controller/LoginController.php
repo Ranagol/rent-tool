@@ -14,6 +14,7 @@ final class LoginController extends AbstractController
     {
         // Get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
+
         // Last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
@@ -26,7 +27,6 @@ final class LoginController extends AbstractController
     #[Route('/logout', name: 'app_logout')]
     public function logout(): void
     {
-        // This will never be executed, but ensures the route exists
+        // The actual logout is handled by Symfony, this method can be empty
     }
 }
-

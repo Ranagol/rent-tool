@@ -58,8 +58,12 @@ class UserRegistrationTest extends WebTestCase
 
         $client->submit($form);
 
-        // Should redirect after successful registration
+        // Successful registration redirects to login and shows a one-time confirmation.
         $this->assertResponseRedirects('/login');
+        $client->followRedirect();
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('[role="status"]', 'Your account has been created successfully');
     }
 
     public function testRegistrationRejectsDuplicateEmail(): void

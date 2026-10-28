@@ -4,9 +4,10 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
-use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -30,22 +31,22 @@ final class RegistrationController extends AbstractController
             $user->setPassword($hashedPassword);
 
             try {
+
+                // Succesfull registration
                 $entityManager->persist($user);
                 $entityManager->flush();
 
+                $this->addFlash('success', 'Your account has been created successfully. Please log in.');
+
                 return $this->redirectToRoute('app_login');
-            } catch (DBALException $e) {
-                // Handle unique constraint violations
-                if (strpos($e->getMessage(), 'unique') !== false || strpos($e->getMessage(), 'Unique') !== false) {
-                    $form->addError(new \Symfony\Component\Form\FormError('Email is already in use'));
-                    $statusCode = Response::HTTP_UNPROCESSABLE_ENTITY;
+            } catch (UniqueConstraintViolationException) {
+                
+                // A concurrent request registered the same email after UniqueEntity validation passed.
+                $form->addError(new FormError('Email is already in use'));
 
-                    return $this->render('registration/index.html.twig', [
-                        'form' => $form,
-                    ], new Response(null, $statusCode));
-                }
-
-                throw $e;
+                return $this->render('registration/index.html.twig', [
+                    'form' => $form,
+                ], new Response(null, Response::HTTP_UNPROCESSABLE_ENTITY));
             }
         }
 
@@ -56,6 +57,3 @@ final class RegistrationController extends AbstractController
         ], new Response(null, $statusCode));
     }
 }
-
-
-
