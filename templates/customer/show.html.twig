@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ customer.name }}{% endblock %}
+
+{% block body %}
+<div class="page-narrow">
+    {% include '_partials/page_header.html.twig' with {title: customer.name, subtitle: customer.email} %}
+    <div class="card">
+        <dl class="grid grid-cols-3 gap-y-4 text-sm">
+            <dt class="font-medium text-ink-muted">Email</dt>
+            <dd class="col-span-2"><a href="mailto:{{ customer.email }}" class="link">{{ customer.email }}</a></dd>
+            <dt class="font-medium text-ink-muted">Phone</dt>
+            <dd class="col-span-2">{{ customer.phone ?: '—' }}</dd>
+            <dt class="font-medium text-ink-muted">Address</dt>
+            <dd class="col-span-2">{{ customer.address ?: '—' }}</dd>
+            <dt class="font-medium text-ink-muted">Postal code</dt>
+            <dd class="col-span-2">{{ customer.postalCode ?: '—' }}</dd>
+            <dt class="font-medium text-ink-muted">City</dt>
+            <dd class="col-span-2">{{ customer.city ?: '—' }}</dd>
+            <dt class="font-medium text-ink-muted">Comments</dt>
+            <dd class="col-span-2 whitespace-pre-line">{{ customer.comments ?: '—' }}</dd>
+        </dl>
+
+        <div class="mt-8 flex flex-wrap justify-between gap-2">
+            <a href="{{ path('app_customer_index') }}" class="btn btn-secondary">Back to list</a>
+            <div class="flex gap-2">
+                <a href="{{ path('app_customer_edit', {id: customer.id}) }}" class="btn btn-primary">Edit</a>
+                {% include '_partials/confirm_dialog.html.twig' with {
+                    id: 'delete-customer-' ~ customer.id,
+                    title: 'Delete customer?',
+                    message: 'This permanently deletes ' ~ customer.name ~ '. This cannot be undone.',
+                    action: path('app_customer_delete', {id: customer.id}),
+                    token_id: 'delete' ~ customer.id
+                } %}
+            </div>
+        </div>
+    </div>
+
+    <section class="card mt-6" aria-labelledby="rental-history">
+        <h2 id="rental-history" class="mb-2 text-lg font-semibold">Rental history</h2>
+        <p class="text-sm text-ink-muted">No rentals yet.</p>
+    </section>
+</div>
+{% endblock %}

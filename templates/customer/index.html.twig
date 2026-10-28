@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Customers{% endblock %}
+
+{% block body %}
+{% set params = {q: term} %}
+<div class="page">
+    {% include '_partials/page_header.html.twig' with {
+        title: 'Customers',
+        subtitle: total ~ (1 == total ? ' customer' : ' customers'),
+        action_url: path('app_customer_new'),
+        action_label: 'New customer'
+    } %}
+
+    <div class="card !p-0 overflow-hidden">
+        <form method="get" class="flex flex-wrap items-center gap-3 border-b border-line p-4" role="search">
+            <input type="hidden" name="sort" value="{{ sort }}">
+            <input type="hidden" name="dir" value="{{ direction }}">
+            <label for="customer-search" class="sr-only">Search by name, email or phone</label>
+            <input type="search" id="customer-search" name="q" value="{{ term }}" placeholder="Search name, email or phone…" class="form-control max-w-xs">
+            <button type="submit" class="btn btn-secondary">Search</button>
+            {% if term %}<a href="{{ path('app_customer_index') }}" class="link text-sm">Clear</a>{% endif %}
+        </form>
+
+        {% if customers is empty %}
+            {% include '_partials/empty_state.html.twig' with {
+                message: term ? 'No customers match your search.' : 'There are no customers yet.',
+                action_url: path('app_customer_new'),
+                action_label: 'Add a customer'
+            } %}
+        {% else %}
+            <div class="overflow-x-auto">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            {% for field, label in {name: 'Name', email: 'Email', phone: 'Phone', city: 'City'} %}
+                                {% include '_partials/sortable_th.html.twig' with {route: 'app_customer_index', params: params, field: field, label: label, sort: sort, direction: direction} %}
+                            {% endfor %}
+                            <th scope="col" class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer in customers %}
+                            <tr>
+                                <td><a href="{{ path('app_customer_show', {id: customer.id}) }}" class="link">{{ customer.name }}</a></td>
+                                <td>{{ customer.email }}</td>
+                                <td>{{ customer.phone ?: '—' }}</td>
+                                <td>{{ customer.city ?: '—' }}</td>
+                                <td>
+                                    <div class="flex justify-end gap-2">
+                                        <a href="{{ path('app_customer_show', {id: customer.id}) }}" class="btn btn-secondary">View</a>
+                                        <a href="{{ path('app_customer_edit', {id: customer.id}) }}" class="btn btn-secondary">Edit</a>
+                                        {% include '_partials/confirm_dialog.html.twig' with {
+                                            id: 'delete-customer-' ~ customer.id,
+                                            title: 'Delete customer?',
+                                            message: 'This permanently deletes ' ~ customer.name ~ '. This cannot be undone.',
+                                            action: path('app_customer_delete', {id: customer.id}),
+                                            token_id: 'delete' ~ customer.id
+                                        } %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% include '_partials/pagination.html.twig' with {route: 'app_customer_index', params: params|merge({sort: sort, dir: direction}), page: page, pages: pages} %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
