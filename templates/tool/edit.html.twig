@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit tool{% endblock %}
+
+{% block body %}
+<div class="page-narrow">
+    {% include '_partials/page_header.html.twig' with {title: 'Edit tool', subtitle: tool.name} %}
+    <div class="card">
+        {{ include('tool/_form.html.twig', {button_label: 'Save changes'}) }}
+    </div>
+</div>
+{% endblock %}

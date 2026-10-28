@@ -1,0 +1,8 @@
+{# Variables: route, params (current filters), field, label, sort, direction #}
+{% set is_sorted = sort == field %}
+<th scope="col" aria-sort="{{ is_sorted ? ('asc' == direction ? 'ascending' : 'descending') : 'none' }}">
+    <a href="{{ path(route, params|merge({sort: field, dir: (is_sorted and 'asc' == direction) ? 'desc' : 'asc'})) }}" class="inline-flex items-center gap-1 hover:text-brand-700">
+        {{ label }}
+        {% if is_sorted %}<span aria-hidden="true">{{ 'asc' == direction ? '↑' : '↓' }}</span>{% endif %}
+    </a>
+</th>

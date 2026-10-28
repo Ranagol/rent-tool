@@ -34,13 +34,7 @@
                     <thead>
                         <tr>
                             {% for field, label in {id: 'ID', email: 'Email'} %}
-                                {% set next_dir = (sort == field and 'asc' == direction) ? 'desc' : 'asc' %}
-                                <th scope="col" aria-sort="{{ sort == field ? ('asc' == direction ? 'ascending' : 'descending') : 'none' }}">
-                                    <a href="{{ path('app_user_index', {q: term, sort: field, dir: next_dir}) }}" class="inline-flex items-center gap-1 hover:text-brand-700">
-                                        {{ label }}
-                                        {% if sort == field %}<span aria-hidden="true">{{ 'asc' == direction ? '↑' : '↓' }}</span>{% endif %}
-                                    </a>
-                                </th>
+                                {% include '_partials/sortable_th.html.twig' with {route: 'app_user_index', params: {q: term}, field: field, label: label, sort: sort, direction: direction} %}
                             {% endfor %}
                             <th scope="col">Roles</th>
                             <th scope="col" class="text-right">Actions</th>

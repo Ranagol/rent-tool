@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ tool.name }}{% endblock %}
+
+{% block body %}
+<div class="page-narrow">
+    {% include '_partials/page_header.html.twig' with {title: tool.name, subtitle: tool.serialNumber} %}
+    <div class="card">
+        <img src="{{ tool.imageUrl }}" alt="{{ tool.name }}" referrerpolicy="no-referrer" class="mb-6 max-h-64 w-full rounded-control bg-surface-muted object-cover">
+
+        <dl class="grid grid-cols-3 gap-y-4 text-sm">
+            <dt class="font-medium text-ink-muted">Status</dt>
+            <dd class="col-span-2"><span class="badge {{ tool.status.badgeClass }}">{{ tool.status.label }}</span></dd>
+            <dt class="font-medium text-ink-muted">Daily rent cost</dt>
+            <dd class="col-span-2">{{ tool.dailyRentCost|number_format(2, '.', ',') }} €</dd>
+            <dt class="font-medium text-ink-muted">Description</dt>
+            <dd class="col-span-2 whitespace-pre-line">{{ tool.description ?: '—' }}</dd>
+            <dt class="font-medium text-ink-muted">Comments</dt>
+            <dd class="col-span-2 whitespace-pre-line">{{ tool.comments ?: '—' }}</dd>
+        </dl>
+
+        <div class="mt-8 flex flex-wrap justify-between gap-2">
+            <a href="{{ path('app_tool_index') }}" class="btn btn-secondary">Back to list</a>
+            <div class="flex gap-2">
+                <a href="{{ path('app_tool_edit', {id: tool.id}) }}" class="btn btn-primary">Edit</a>
+                {% include '_partials/confirm_dialog.html.twig' with {
+                    id: 'delete-tool-' ~ tool.id,
+                    title: 'Delete tool?',
+                    message: 'This permanently deletes ' ~ tool.name ~ '. This cannot be undone.',
+                    action: path('app_tool_delete', {id: tool.id}),
+                    token_id: 'delete' ~ tool.id
+                } %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

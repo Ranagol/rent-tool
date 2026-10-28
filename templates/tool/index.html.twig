@@ -3,10 +3,78 @@
 {% block title %}Tools{% endblock %}
 
 {% block body %}
+{% set params = {q: term, status: status ? status.value : ''} %}
 <div class="page">
-    <div class="card">
-        <h1 class="page-title">Hello {{ controller_name }}!</h1>
-        <p class="page-lead">Tool inventory will appear here.</p>
+    {% include '_partials/page_header.html.twig' with {
+        title: 'Tools',
+        subtitle: total ~ (1 == total ? ' tool' : ' tools'),
+        action_url: path('app_tool_new'),
+        action_label: 'New tool'
+    } %}
+
+    <div class="card !p-0 overflow-hidden">
+        <form method="get" class="flex flex-wrap items-center gap-3 border-b border-line p-4" role="search">
+            <input type="hidden" name="sort" value="{{ sort }}">
+            <input type="hidden" name="dir" value="{{ direction }}">
+            <label for="tool-search" class="sr-only">Search by name or serial number</label>
+            <input type="search" id="tool-search" name="q" value="{{ term }}" placeholder="Search name or serial number…" class="form-control max-w-xs">
+            <label for="tool-status" class="sr-only">Filter by status</label>
+            <select id="tool-status" name="status" class="form-control max-w-40">
+                <option value="">All statuses</option>
+                {% for s in statuses %}
+                    <option value="{{ s.value }}"{{ status == s ? ' selected' }}>{{ s.label }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-secondary">Search</button>
+            {% if term or status %}<a href="{{ path('app_tool_index') }}" class="link text-sm">Clear</a>{% endif %}
+        </form>
+
+        {% if tools is empty %}
+            {% include '_partials/empty_state.html.twig' with {
+                message: (term or status) ? 'No tools match your search.' : 'There are no tools yet.',
+                action_url: path('app_tool_new'),
+                action_label: 'Add a tool'
+            } %}
+        {% else %}
+            <div class="overflow-x-auto">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col"><span class="sr-only">Image</span></th>
+                            {% for field, label in {name: 'Name', serial: 'Serial number', cost: 'Daily cost', status: 'Status'} %}
+                                {% include '_partials/sortable_th.html.twig' with {route: 'app_tool_index', params: params, field: field, label: label, sort: sort, direction: direction} %}
+                            {% endfor %}
+                            <th scope="col" class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tool in tools %}
+                            <tr>
+                                <td><img src="{{ tool.imageUrl }}" alt="" loading="lazy" referrerpolicy="no-referrer" class="size-10 rounded-control bg-surface-muted object-cover"></td>
+                                <td><a href="{{ path('app_tool_show', {id: tool.id}) }}" class="link">{{ tool.name }}</a></td>
+                                <td>{{ tool.serialNumber }}</td>
+                                <td>{{ tool.dailyRentCost|number_format(2, '.', ',') }} €</td>
+                                <td><span class="badge {{ tool.status.badgeClass }}">{{ tool.status.label }}</span></td>
+                                <td>
+                                    <div class="flex justify-end gap-2">
+                                        <a href="{{ path('app_tool_show', {id: tool.id}) }}" class="btn btn-secondary">View</a>
+                                        <a href="{{ path('app_tool_edit', {id: tool.id}) }}" class="btn btn-secondary">Edit</a>
+                                        {% include '_partials/confirm_dialog.html.twig' with {
+                                            id: 'delete-tool-' ~ tool.id,
+                                            title: 'Delete tool?',
+                                            message: 'This permanently deletes ' ~ tool.name ~ '. This cannot be undone.',
+                                            action: path('app_tool_delete', {id: tool.id}),
+                                            token_id: 'delete' ~ tool.id
+                                        } %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% include '_partials/pagination.html.twig' with {route: 'app_tool_index', params: params|merge({sort: sort, dir: direction}), page: page, pages: pages} %}
+        {% endif %}
     </div>
 </div>
 {% endblock %}

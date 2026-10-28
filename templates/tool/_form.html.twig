@@ -1,0 +1,15 @@
+{{ form_start(form) }}
+    {{ form_errors(form) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.serialNumber) }}
+    {{ form_row(form.imageUrl) }}
+    {{ form_row(form.dailyRentCost) }}
+    {{ form_row(form.status) }}
+    {{ form_row(form.description) }}
+    {{ form_row(form.comments) }}
+
+    <div class="flex justify-end gap-2">
+        <a href="{{ path('app_tool_index') }}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    </div>
+{{ form_end(form) }}
