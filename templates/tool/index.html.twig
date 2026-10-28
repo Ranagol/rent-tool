@@ -1,20 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ToolController!{% endblock %}
+{% block title %}Tools{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/app/src/Controller/ToolController.php</code></li>
-        <li>Your template at <code>/app/templates/tool/index.html.twig</code></li>
-    </ul>
+<div class="page">
+    <div class="card">
+        <h1 class="page-title">Hello {{ controller_name }}!</h1>
+        <p class="page-lead">Tool inventory will appear here.</p>
+    </div>
 </div>
 {% endblock %}

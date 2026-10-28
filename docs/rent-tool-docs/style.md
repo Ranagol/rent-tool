@@ -77,3 +77,14 @@
 - Treat hover effects, transitions, and meaningful interaction feedback as mandatory wherever appropriate, rather than optional polish.
 - When introducing a new component or interaction, define its visual states and animation behavior consistently with the existing system.
 - Update this guide when established styling conventions change.
+
+
+## Symfony Forms and Validation
+
+- Use **Symfony Forms** for all application forms, including data binding, CSRF protection, and integration with Symfony Validator. Define appropriate validation constraints on entities or dedicated validation models.
+- Use Symfony's built-in form handling and validation workflow, including automatic display of field-level validation errors. Do not manually reimplement form processing, validation, or error handling.
+- Use Symfony's Twig form rendering functions (`form_start()`, `form_row()`, `form_widget()`, `form_errors()`, etc.) and preserve automatic error display and submitted values when validation fails.
+- Style forms using **Tailwind CSS, custom CSS, reusable design tokens, and shared form themes**. Maintain consistent styling for inputs, labels, help text, buttons, and validation states across the application.
+- Provide clear visual feedback for invalid fields, validation messages, focus, disabled states, and required fields. Ensure accessibility, responsive layouts, and consistent transitions.
+- Client-side validation may enhance usability, but **server-side Symfony validation remains authoritative**. Never rely exclusively on JavaScript or browser validation.
+- Prefer reusable form themes and shared styling conventions over duplicated field-specific configuration. Do not introduce additional form libraries or styling dependencies without a clear benefit.
