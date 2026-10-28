@@ -28,6 +28,7 @@
                 <a href="{{ path('app_home') }}" class="text-lg font-bold tracking-tight text-ink hover:text-brand-600">Rent<span class="text-brand-600">Tool</span></a>
                 <div class="flex items-center gap-1">
                     {% if app.user %}
+                        <a href="{{ path('app_rental_index') }}" class="nav-link" {% if app.current_route starts with 'app_rental' %}aria-current="page"{% endif %}>Rentals</a>
                         <a href="{{ path('app_tool_index') }}" class="nav-link" {% if app.current_route starts with 'app_tool' %}aria-current="page"{% endif %}>Tools</a>
                         <a href="{{ path('app_customer_index') }}" class="nav-link" {% if app.current_route starts with 'app_customer' %}aria-current="page"{% endif %}>Customers</a>
                         <a href="{{ path('app_user_index') }}" class="nav-link" {% if app.current_route starts with 'app_user' %}aria-current="page"{% endif %}>Users</a>

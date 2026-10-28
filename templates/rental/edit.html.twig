@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit rental #{{ rental.id }}{% endblock %}
+
+{% block body %}
+<div class="page-narrow">
+    {% include '_partials/page_header.html.twig' with {title: 'Edit rental #' ~ rental.id, subtitle: 'Tools cannot be changed after a rental is created.'} %}
+    <div class="card">
+        {{ include('rental/_form.html.twig', {button_label: 'Save changes', cancel_url: path('app_rental_show', {id: rental.id})}) }}
+    </div>
+</div>
+{% endblock %}

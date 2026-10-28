@@ -1,0 +1,12 @@
+{{ form_start(form) }}
+    {{ form_errors(form) }}
+    {{ form_row(form.customer) }}
+    {{ form_row(form.rentalStartDate) }}
+    {{ form_row(form.expectedReturnDate) }}
+    {% if form.tools is defined %}{{ form_row(form.tools) }}{% endif %}
+
+    <div class="flex justify-end gap-2">
+        <a href="{{ cancel_url }}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    </div>
+{{ form_end(form) }}

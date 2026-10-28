@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rentals{% endblock %}
+
+{% block body %}
+{% set params = {q: term, status: status ? status.value : ''} %}
+<div class="page">
+    {% include '_partials/page_header.html.twig' with {
+        title: 'Rentals',
+        subtitle: total ~ (1 == total ? ' rental' : ' rentals'),
+        action_url: path('app_rental_new'),
+        action_label: 'New rental'
+    } %}
+
+    <div class="card !p-0 overflow-hidden">
+        <form method="get" class="flex flex-wrap items-center gap-3 border-b border-line p-4" role="search">
+            <input type="hidden" name="sort" value="{{ sort }}">
+            <input type="hidden" name="dir" value="{{ direction }}">
+            <label for="rental-search" class="sr-only">Search by customer or tool</label>
+            <input type="search" id="rental-search" name="q" value="{{ term }}" placeholder="Search customer or tool…" class="form-control max-w-xs">
+            <label for="rental-status" class="sr-only">Filter by status</label>
+            <select id="rental-status" name="status" class="form-control max-w-40">
+                <option value="">All statuses</option>
+                {% for s in statuses %}
+                    <option value="{{ s.value }}"{{ status == s ? ' selected' }}>{{ s.label }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-secondary">Search</button>
+            {% if term or status %}<a href="{{ path('app_rental_index') }}" class="link text-sm">Clear</a>{% endif %}
+        </form>
+
+        {% if rentals is empty %}
+            {% include '_partials/empty_state.html.twig' with {
+                message: (term or status) ? 'No rentals match your search.' : 'There are no rentals yet.',
+                action_url: path('app_rental_new'),
+                action_label: 'Create a rental'
+            } %}
+        {% else %}
+            <div class="overflow-x-auto">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            {% for field, label in {id: '#', customer: 'Customer'} %}
+                                {% include '_partials/sortable_th.html.twig' with {route: 'app_rental_index', params: params, field: field, label: label, sort: sort, direction: direction} %}
+                            {% endfor %}
+                            <th scope="col">Tools</th>
+                            {% for field, label in {start: 'Start', expected: 'Expected return', total: 'Total'} %}
+                                {% include '_partials/sortable_th.html.twig' with {route: 'app_rental_index', params: params, field: field, label: label, sort: sort, direction: direction} %}
+                            {% endfor %}
+                            <th scope="col">Status</th>
+                            <th scope="col" class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rental in rentals %}
+                            <tr>
+                                <td><a href="{{ path('app_rental_show', {id: rental.id}) }}" class="link">#{{ rental.id }}</a></td>
+                                <td>{{ rental.customer.name }}</td>
+                                <td>{{ rental.items|map(item => item.tool.name)|join(', ') }}</td>
+                                <td>{{ rental.rentalStartDate|date('Y-m-d H:i') }}</td>
+                                <td>{{ rental.expectedReturnDate|date('Y-m-d H:i') }}</td>
+                                <td>{{ rental.totalRentCost|number_format(2, '.', ',') }} €</td>
+                                <td><span class="badge {{ rental.status.badgeClass }}">{{ rental.status.label }}</span></td>
+                                <td>
+                                    <div class="flex justify-end gap-2">
+                                        <a href="{{ path('app_rental_show', {id: rental.id}) }}" class="btn btn-secondary">View</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% include '_partials/pagination.html.twig' with {route: 'app_rental_index', params: params|merge({sort: sort, dir: direction}), page: page, pages: pages} %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

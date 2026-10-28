@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Return rental #{{ rental.id }}{% endblock %}
+
+{% block body %}
+<div class="page-narrow">
+    {% include '_partials/page_header.html.twig' with {title: 'Return rental #' ~ rental.id, subtitle: rental.customer.name} %}
+    <div class="card">
+        <p class="mb-4 text-sm text-ink-muted">The return date is set to the current date and time, and the final cost is calculated.</p>
+        {{ form_start(form) }}
+            {{ form_errors(form) }}
+            {{ form_row(form.repairTools) }}
+            <div class="flex justify-end gap-2">
+                <a href="{{ path('app_rental_show', {id: rental.id}) }}" class="btn btn-secondary">Back</a>
+                <button type="submit" class="btn btn-primary">Complete return</button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

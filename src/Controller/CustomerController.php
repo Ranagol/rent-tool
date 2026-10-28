@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Customer;
 use App\Form\CustomerType;
 use App\Repository\CustomerRepository;
+use App\Repository\RentalRepository;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -68,9 +69,12 @@ final class CustomerController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_customer_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(Customer $customer): Response
+    public function show(Customer $customer, RentalRepository $rentalRepository): Response
     {
-        return $this->render('customer/show.html.twig', ['customer' => $customer]);
+        return $this->render('customer/show.html.twig', [
+            'customer' => $customer,
+            'rentals' => $rentalRepository->findByCustomer($customer->getId()),
+        ]);
     }
 
     #[Route('/{id}/edit', name: 'app_customer_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

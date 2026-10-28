@@ -1,5 +1,5 @@
-{# Variables: id, title, message, action, token_id #}
-<button type="button" class="btn btn-danger" data-dialog-open="{{ id }}">Delete</button>
+{# Variables: id, title, message, action, token_id, label (optional, default "Delete") #}
+<button type="button" class="btn btn-danger" data-dialog-open="{{ id }}">{{ label|default('Delete') }}</button>
 
 <dialog id="{{ id }}" class="dialog" aria-labelledby="{{ id }}-title">
     <form method="post" action="{{ action }}">
@@ -8,7 +8,7 @@
         <input type="hidden" name="_token" value="{{ csrf_token(token_id) }}">
         <div class="mt-6 flex justify-end gap-2">
             <button type="button" class="btn btn-secondary" data-dialog-close>Cancel</button>
-            <button type="submit" class="btn btn-danger">Delete</button>
+            <button type="submit" class="btn btn-danger">{{ label|default('Delete') }}</button>
         </div>
     </form>
 </dialog>

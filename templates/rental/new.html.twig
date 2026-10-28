@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New rental{% endblock %}
+
+{% block body %}
+<div class="page-narrow">
+    {% include '_partials/page_header.html.twig' with {title: 'New rental'} %}
+    <div class="card">
+        {{ include('rental/_form.html.twig', {button_label: 'Create rental', cancel_url: path('app_rental_index')}) }}
+    </div>
+</div>
+{% endblock %}

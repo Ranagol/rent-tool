@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rental #{{ rental.id }}{% endblock %}
+
+{% block body %}
+<div class="page-narrow">
+    {% include '_partials/page_header.html.twig' with {title: 'Rental #' ~ rental.id, subtitle: rental.customer.name} %}
+    <div class="card">
+        <dl class="grid grid-cols-3 gap-y-4 text-sm">
+            <dt class="font-medium text-ink-muted">Status</dt>
+            <dd class="col-span-2"><span class="badge {{ rental.status.badgeClass }}">{{ rental.status.label }}</span></dd>
+            <dt class="font-medium text-ink-muted">Customer</dt>
+            <dd class="col-span-2"><a href="{{ path('app_customer_show', {id: rental.customer.id}) }}" class="link">{{ rental.customer.name }}</a></dd>
+            <dt class="font-medium text-ink-muted">Created by</dt>
+            <dd class="col-span-2">{{ rental.user.email }}</dd>
+            <dt class="font-medium text-ink-muted">Start</dt>
+            <dd class="col-span-2">{{ rental.rentalStartDate|date('Y-m-d H:i') }}</dd>
+            <dt class="font-medium text-ink-muted">Expected return</dt>
+            <dd class="col-span-2">{{ rental.expectedReturnDate|date('Y-m-d H:i') }}</dd>
+            <dt class="font-medium text-ink-muted">Actual return</dt>
+            <dd class="col-span-2">{{ rental.actualReturnDate ? rental.actualReturnDate|date('Y-m-d H:i') : '—' }}</dd>
+            <dt class="font-medium text-ink-muted">{{ rental.actualReturnDate ? 'Total cost' : 'Estimated cost' }}</dt>
+            <dd class="col-span-2 font-semibold">{{ rental.totalRentCost|number_format(2, '.', ',') }} €</dd>
+        </dl>
+
+        <h2 class="mb-2 mt-8 text-lg font-semibold">Tools</h2>
+        <div class="overflow-x-auto">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Tool</th>
+                        <th scope="col">Serial number</th>
+                        <th scope="col">Daily cost</th>
+                        <th scope="col">Tool status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in rental.items %}
+                        <tr>
+                            <td><a href="{{ path('app_tool_show', {id: item.tool.id}) }}" class="link">{{ item.tool.name }}</a></td>
+                            <td>{{ item.tool.serialNumber }}</td>
+                            <td>{{ item.dailyRentCost|number_format(2, '.', ',') }} €</td>
+                            <td><span class="badge {{ item.tool.status.badgeClass }}">{{ item.tool.status.label }}</span></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-8 flex flex-wrap justify-between gap-2">
+            <a href="{{ path('app_rental_index') }}" class="btn btn-secondary">Back to list</a>
+            {% if rental.active %}
+                <div class="flex gap-2">
+                    <a href="{{ path('app_rental_edit', {id: rental.id}) }}" class="btn btn-secondary">Edit</a>
+                    <a href="{{ path('app_rental_return', {id: rental.id}) }}" class="btn btn-primary">Return tools</a>
+                    {% include '_partials/confirm_dialog.html.twig' with {
+                        id: 'cancel-rental-' ~ rental.id,
+                        label: 'Cancel rental',
+                        title: 'Cancel rental?',
+                        message: 'The rental is kept in the history and its tools become available again.',
+                        action: path('app_rental_cancel', {id: rental.id}),
+                        token_id: 'cancel' ~ rental.id
+                    } %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
