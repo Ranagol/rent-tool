@@ -137,6 +137,38 @@ class UserLoginTest extends WebTestCase
         $this->assertSelectorExists('[role="alert"]');
     }
 
+    public function testLoginFormHasCsrfToken(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/login');
+
+        $this->assertSelectorExists('input[name="_csrf_token"]');
+    }
+
+    public function testLoginRejectedWithoutCsrfToken(): void
+    {
+        $client = static::createClient();
+        $client->request('POST', '/login', ['email' => 'a@example.com', 'password' => 'whatever123']);
+
+        $this->assertResponseRedirects('/login');
+        $client->followRedirect();
+        $this->assertSelectorExists('.form-error[role="alert"]');
+    }
+
+    public function testLoginErrorKeepsSubmittedEmail(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/login');
+        $form = $crawler->selectButton('Login')->form();
+        $form['email'] = 'keep@example.com';
+        $form['password'] = 'WrongPassword123';
+        $client->submit($form);
+        $client->followRedirect();
+
+        $this->assertSelectorExists('.form-error[role="alert"]');
+        $this->assertInputValueSame('email', 'keep@example.com');
+    }
+
     public function testUnauthenticatedUserCanAccessLoginPage(): void
     {
         $client = static::createClient();

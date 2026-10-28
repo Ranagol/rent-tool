@@ -33,6 +33,9 @@ security:
                 check_path: app_login
                 username_parameter: email
                 password_parameter: password
+                enable_csrf: true
+                csrf_parameter: _csrf_token
+                csrf_token_id: authenticate
                 # where to go after a successful login (/).
                 default_target_path: /
             logout:

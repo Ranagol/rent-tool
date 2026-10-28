@@ -11,23 +11,13 @@
             <div class="alert alert-success" role="status">{{ message }}</div>
         {% endfor %}
 
-        {% if error %}
-            <div class="alert alert-error" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
-
-        <form method="post">
-            <div class="form-group">
-                <label for="email" class="form-label required">Email</label>
-                <input type="email" name="email" id="email" class="form-control" value="{{ last_username }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password" class="form-label required">Password</label>
-                <input type="password" name="password" id="password" class="form-control" required>
-            </div>
+        {{ form_start(form) }}
+            {{ form_errors(form) }}
+            {{ form_row(form.email) }}
+            {{ form_row(form.password) }}
 
             <button type="submit" class="btn btn-primary w-full">Login</button>
-        </form>
+        {{ form_end(form) }}
 
         <p class="mt-5 text-sm text-ink-muted">
             Don't have an account? <a href="{{ path('app_register') }}" class="link">Register here</a>
